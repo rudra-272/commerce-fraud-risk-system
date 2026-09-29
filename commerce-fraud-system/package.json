@@ -1,0 +1,19 @@
+{
+  "name": "commerce-order-fraud-risk-system",
+  "version": "1.0.0",
+  "description": "Commerce Order & Fraud Risk Management System - order intake with real-time rule-based fraud scoring dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node data/seed.js",
+    "test": "node --test"
+  },
+  "keywords": ["ecommerce", "fraud-detection", "order-management", "risk-scoring"],
+  "author": "Rudra",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "uuid": "^9.0.1"
+  }
+}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Commerce Order & Fraud Risk Management System</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🛡️ Commerce Order & Fraud Risk Management System</h1>
+    <p class="subtitle">Real-time order intake with rule-based fraud risk scoring</p>
+  </header>
+
+  <main>
+    <section class="stats" id="statsSection">
+      <div class="stat-card"><span class="stat-value" id="statTotal">0</span><span class="stat-label">Total Orders</span></div>
+      <div class="stat-card"><span class="stat-value" id="statValue">$0</span><span class="stat-label">Total Order Value</span></div>
+      <div class="stat-card risk-low"><span class="stat-value" id="statLow">0</span><span class="stat-label">Low Risk</span></div>
+      <div class="stat-card risk-medium"><span class="stat-value" id="statMedium">0</span><span class="stat-label">Medium Risk</span></div>
+      <div class="stat-card risk-high"><span class="stat-value" id="statHigh">0</span><span class="stat-label">High Risk</span></div>
+      <div class="stat-card risk-critical"><span class="stat-value" id="statCritical">0</span><span class="stat-label">Critical Risk</span></div>
+    </section>
+
+    <section class="panels">
+      <div class="panel form-panel">
+        <h2>New Order</h2>
+        <form id="orderForm">
+          <label>Customer Email <input type="email" name="customerEmail" required placeholder="customer@example.com" /></label>
+          <label>Product Name <input type="text" name="productName" placeholder="Wireless Mouse" /></label>
+          <div class="row">
+            <label>Amount ($) <input type="number" step="0.01" name="amount" required placeholder="99.99" /></label>
+            <label>Quantity <input type="number" name="quantity" value="1" min="1" /></label>
+          </div>
+          <div class="row">
+            <label>Billing Country <input type="text" name="billingCountry" required placeholder="IN" maxlength="2" /></label>
+            <label>Shipping Country <input type="text" name="shippingCountry" required placeholder="IN" maxlength="2" /></label>
+          </div>
+          <div class="row">
+            <label>IP Country <input type="text" name="ipCountry" placeholder="defaults to billing" maxlength="2" /></label>
+            <label>Account Age (days) <input type="number" name="accountAgeDays" placeholder="e.g. 30" /></label>
+          </div>
+          <label>Card BIN (first 6 digits, optional) <input type="text" name="cardBin" placeholder="411111" maxlength="6" /></label>
+          <button type="submit">Submit Order for Scoring</button>
+          <p class="form-msg" id="formMsg"></p>
+        </form>
+      </div>
+
+      <div class="panel table-panel">
+        <div class="table-header">
+          <h2>Orders</h2>
+          <select id="riskFilter">
+            <option value="">All Risk Levels</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="CRITICAL">Critical</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table id="ordersTable">
+            <thead>
+              <tr>
+                <th>Customer</th><th>Product</th><th>Amount</th><th>Risk</th><th>Score</th><th>Status</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <button id="modalClose" class="modal-close">&times;</button>
+      <h3>Order Detail</h3>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
