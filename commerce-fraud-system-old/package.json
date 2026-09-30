@@ -8,18 +8,12 @@
     "seed": "node data/seed.js",
     "test": "node --test"
   },
-  "keywords": [
-    "ecommerce",
-    "fraud-detection",
-    "order-management",
-    "risk-scoring"
-  ],
+  "keywords": ["ecommerce", "fraud-detection", "order-management", "risk-scoring"],
   "author": "Rudra",
   "license": "MIT",
   "dependencies": {
-    "@upstash/redis": "^1.39.0",
-    "cors": "^2.8.5",
     "express": "^4.19.2",
+    "cors": "^2.8.5",
     "uuid": "^9.0.1"
   }
 }

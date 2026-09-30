@@ -1,13 +1,13 @@
 // Run with: npm run seed
-// Populates data/orders.json with a handful of realistic sample orders
-// spanning low, medium, high and critical risk so the dashboard has
-// something to show immediately after setup.
+// Populates storage with a handful of realistic sample orders spanning
+// low, medium, high and critical risk so the dashboard has something to
+// show immediately. Works against whichever backend orderStore picks
+// (local JSON file by default, or Upstash Redis if its env vars are set —
+// e.g. run `vercel env pull .env.local` first, then `node -r dotenv/config
+// data/seed.js` to seed your live Vercel deployment's Redis store).
 const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
+const orderStore = require('../models/orderStore');
 const fraudEngine = require('../services/fraudEngine');
-
-const DB_FILE = path.join(__dirname, 'orders.json');
 
 const raw = [
   { customerEmail: 'anita.rao@gmail.com', amount: 45.99, quantity: 1, billingCountry: 'IN', shippingCountry: 'IN', ipCountry: 'IN', accountAgeDays: 400, productName: 'Wireless Mouse' },
@@ -18,20 +18,31 @@ const raw = [
   { customerEmail: 'ravi.kumar@gmail.com', amount: 22.0, quantity: 1, billingCountry: 'IN', shippingCountry: 'IN', ipCountry: 'IN', accountAgeDays: 800, productName: 'Phone Case' },
 ];
 
-const orders = raw.map(o => {
-  const order = {
-    id: uuidv4(),
-    ...o,
-    createdAt: new Date(Date.now() - Math.floor(Math.random() * 5 * 24 * 60 * 60 * 1000)).toISOString(),
-  };
-  const result = fraudEngine.scoreOrder(order);
-  order.riskScore = result.score;
-  order.riskLevel = result.riskLevel;
-  order.recommendedAction = result.recommendedAction;
-  order.triggeredRules = result.triggeredRules;
-  order.status = result.riskLevel === 'CRITICAL' ? 'BLOCKED' : result.riskLevel === 'HIGH' ? 'UNDER_REVIEW' : 'APPROVED';
-  return order;
-});
+async function main() {
+  const orders = [];
+  for (const o of raw) {
+    const order = {
+      id: uuidv4(),
+      ...o,
+      createdAt: new Date(Date.now() - Math.floor(Math.random() * 5 * 24 * 60 * 60 * 1000)).toISOString(),
+    };
+    const result = await fraudEngine.scoreOrder(order);
+    order.riskScore = result.score;
+    order.riskLevel = result.riskLevel;
+    order.recommendedAction = result.recommendedAction;
+    order.triggeredRules = result.triggeredRules;
+    order.status = result.riskLevel === 'CRITICAL' ? 'BLOCKED' : result.riskLevel === 'HIGH' ? 'UNDER_REVIEW' : 'APPROVED';
+    orders.push(order);
+  }
 
-fs.writeFileSync(DB_FILE, JSON.stringify(orders, null, 2));
-console.log(`Seeded ${orders.length} sample orders into data/orders.json`);
+  for (const order of orders) {
+    await orderStore.add(order);
+  }
+
+  console.log(`Seeded ${orders.length} sample orders (backend: ${orderStore.USE_REDIS ? 'Upstash Redis' : 'local JSON file'})`);
+}
+
+main().catch((err) => {
+  console.error('Seeding failed:', err);
+  process.exit(1);
+});

@@ -1,0 +1,217 @@
+[
+  {
+    "id": "00a6347b-228a-472a-bf23-34a5d6cbe2b1",
+    "customerEmail": "anita.rao@gmail.com",
+    "amount": 45.99,
+    "quantity": 1,
+    "billingCountry": "IN",
+    "shippingCountry": "IN",
+    "ipCountry": "IN",
+    "accountAgeDays": 400,
+    "productName": "Wireless Mouse",
+    "createdAt": "2026-09-26T05:54:44.602Z",
+    "riskScore": 0,
+    "riskLevel": "LOW",
+    "recommendedAction": "Approve",
+    "triggeredRules": [],
+    "status": "APPROVED"
+  },
+  {
+    "id": "491069ae-073a-4f61-9ed3-b884cfc66246",
+    "customerEmail": "karan.mehta@yahoo.com",
+    "amount": 129.5,
+    "quantity": 2,
+    "billingCountry": "IN",
+    "shippingCountry": "IN",
+    "ipCountry": "IN",
+    "accountAgeDays": 120,
+    "productName": "Bluetooth Headphones",
+    "createdAt": "2026-09-25T02:20:00.487Z",
+    "riskScore": 0,
+    "riskLevel": "LOW",
+    "recommendedAction": "Approve",
+    "triggeredRules": [],
+    "status": "APPROVED"
+  },
+  {
+    "id": "788c42fa-ac2e-4472-8c65-ccb4e1271731",
+    "customerEmail": "new.user01@tempmail.com",
+    "amount": 899,
+    "quantity": 1,
+    "billingCountry": "US",
+    "shippingCountry": "NG",
+    "ipCountry": "RU",
+    "accountAgeDays": 0,
+    "cardBin": "400000",
+    "productName": "65-inch Smart TV",
+    "createdAt": "2026-09-23T14:51:24.120Z",
+    "riskScore": 100,
+    "riskLevel": "CRITICAL",
+    "recommendedAction": "Block & Investigate",
+    "triggeredRules": [
+      {
+        "id": "ADDRESS_MISMATCH",
+        "weight": 25,
+        "reason": "Billing and shipping countries do not match"
+      },
+      {
+        "id": "IP_COUNTRY_MISMATCH",
+        "weight": 20,
+        "reason": "Customer IP country differs from billing country"
+      },
+      {
+        "id": "NEW_ACCOUNT_HIGH_VALUE",
+        "weight": 20,
+        "reason": "New account (<= 2 days old) placing a high-value order"
+      },
+      {
+        "id": "BLACKLISTED_CARD_BIN",
+        "weight": 50,
+        "reason": "Card BIN appears on the fraud denylist"
+      },
+      {
+        "id": "DISPOSABLE_EMAIL",
+        "weight": 15,
+        "reason": "Customer used a disposable/temporary email domain"
+      }
+    ],
+    "status": "BLOCKED"
+  },
+  {
+    "id": "607128aa-0c85-4039-9605-50a778b048a5",
+    "customerEmail": "priya.singh@outlook.com",
+    "amount": 1250,
+    "quantity": 1,
+    "billingCountry": "IN",
+    "shippingCountry": "US",
+    "ipCountry": "IN",
+    "accountAgeDays": 1,
+    "productName": "Gaming Laptop",
+    "createdAt": "2026-09-25T17:55:21.914Z",
+    "riskScore": 65,
+    "riskLevel": "HIGH",
+    "recommendedAction": "Manual Review",
+    "triggeredRules": [
+      {
+        "id": "HIGH_ORDER_VALUE",
+        "weight": 20,
+        "reason": "Order value is unusually high (>= $1000)"
+      },
+      {
+        "id": "ADDRESS_MISMATCH",
+        "weight": 25,
+        "reason": "Billing and shipping countries do not match"
+      },
+      {
+        "id": "NEW_ACCOUNT_HIGH_VALUE",
+        "weight": 20,
+        "reason": "New account (<= 2 days old) placing a high-value order"
+      }
+    ],
+    "status": "UNDER_REVIEW"
+  },
+  {
+    "id": "4284b205-42bf-4246-b881-eac307722537",
+    "customerEmail": "fraud@example.com",
+    "amount": 2200,
+    "quantity": 1,
+    "billingCountry": "US",
+    "shippingCountry": "US",
+    "ipCountry": "US",
+    "accountAgeDays": 3,
+    "cardBin": "411111",
+    "productName": "iPhone 16 Pro",
+    "createdAt": "2026-09-27T11:56:02.015Z",
+    "riskScore": 100,
+    "riskLevel": "CRITICAL",
+    "recommendedAction": "Block & Investigate",
+    "triggeredRules": [
+      {
+        "id": "HIGH_ORDER_VALUE",
+        "weight": 20,
+        "reason": "Order value is unusually high (>= $1000)"
+      },
+      {
+        "id": "VELOCITY",
+        "weight": 30,
+        "reason": "3+ orders from this email within the last 60 minutes"
+      },
+      {
+        "id": "BLACKLISTED_EMAIL",
+        "weight": 50,
+        "reason": "Customer email appears on the fraud denylist"
+      },
+      {
+        "id": "BLACKLISTED_CARD_BIN",
+        "weight": 50,
+        "reason": "Card BIN appears on the fraud denylist"
+      }
+    ],
+    "status": "BLOCKED"
+  },
+  {
+    "id": "dd81abc3-0201-43ae-b4dd-caa8d91bf449",
+    "customerEmail": "ravi.kumar@gmail.com",
+    "amount": 22,
+    "quantity": 1,
+    "billingCountry": "IN",
+    "shippingCountry": "IN",
+    "ipCountry": "IN",
+    "accountAgeDays": 800,
+    "productName": "Phone Case",
+    "createdAt": "2026-09-25T13:42:37.594Z",
+    "riskScore": 0,
+    "riskLevel": "LOW",
+    "recommendedAction": "Approve",
+    "triggeredRules": [],
+    "status": "APPROVED"
+  },
+  {
+    "id": "68b49181-81b4-46be-97c9-921141ec314f",
+    "customerEmail": "test@example.com",
+    "amount": 99.99,
+    "quantity": 1,
+    "billingCountry": "IN",
+    "shippingCountry": "IN",
+    "ipCountry": "IN",
+    "accountAgeDays": 27,
+    "cardBin": "411111",
+    "productName": "Wireless Mouse",
+    "createdAt": "2026-09-29T17:40:20.170Z",
+    "status": "BLOCKED",
+    "riskScore": 80,
+    "riskLevel": "CRITICAL",
+    "recommendedAction": "Block & Investigate",
+    "triggeredRules": [
+      {
+        "id": "BLACKLISTED_CARD_BIN",
+        "weight": 50,
+        "reason": "Card BIN appears on the fraud denylist"
+      }
+    ]
+  },
+  {
+    "id": "994a5ef1-c72a-42ae-ba4c-64ea6a375c8a",
+    "customerEmail": "rudra@example.com",
+    "amount": 1000,
+    "quantity": 1,
+    "billingCountry": "IN",
+    "shippingCountry": "IN",
+    "ipCountry": "IN",
+    "accountAgeDays": 21,
+    "cardBin": "555555",
+    "productName": "PS5",
+    "createdAt": "2026-09-29T17:46:46.399Z",
+    "status": "APPROVED",
+    "riskScore": 20,
+    "riskLevel": "LOW",
+    "recommendedAction": "Approve",
+    "triggeredRules": [
+      {
+        "id": "HIGH_ORDER_VALUE",
+        "weight": 20,
+        "reason": "Order value is unusually high (>= $1000)"
+      }
+    ]
+  }
+]

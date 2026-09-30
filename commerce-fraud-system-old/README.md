@@ -17,9 +17,12 @@ against a configurable rule-based fraud engine, then routes it to
   - Disposable email domains
   - Abnormally high quantity
 - **Risk bands**: LOW (0–29) · MEDIUM (30–59) · HIGH (60–79) · CRITICAL (80–100)
+- **Hard-block overrides**: a denylisted email or card BIN always forces CRITICAL / Block, even if the additive score alone wouldn't reach that band — a confirmed denylist hit is treated as a certainty signal, not just one more weighted factor
+- **Input validation**: amount/quantity must be positive numbers, email must be well-formed, and country codes are normalized to uppercase before comparison (so `"us"` vs `"US"` isn't a false address-mismatch)
 - **Dashboard UI** — submit orders, see live stats, filter by risk level, drill
   into which rules fired for any order, and manually override its status
 - **JSON-file persistence** — zero external database setup required
+- **Unit tests** (`test/fraudEngine.test.js`) covering the scoring engine's core rules, the score cap, and the hard-block override, using Node's built-in test runner (no extra dependency)
 
 ## Tech Stack
 
@@ -80,48 +83,23 @@ curl -X POST http://localhost:3000/api/orders \
 
 ## Deployment
 
-### Render / Railway (simplest — no code changes)
-Connect the GitHub repo, set the start command to `npm start`. The app uses
-local JSON-file storage automatically — works out of the box since these
-platforms run a normal persistent server with a writable filesystem.
+This app is a stateless Node/Express server and deploys as-is to Render,
+Railway, or Vercel-with-serverless-adapter. On Render/Railway: connect the
+GitHub repo, set the start command to `npm start`, and it will build and
+serve automatically (the JSON data file resets on redeploy unless a
+persistent disk is attached — that's expected for a demo/student project).
 
-### Vercel (serverless — Redis strongly recommended, but no longer required)
-Vercel's serverless functions have a **read-only filesystem**, so writing to
-the JSON file crashes there with `EROFS`. This is what was causing the
-500 error. Three things fixed it:
+## Design Notes
 
-1. **`models/orderStore.js` now has a safe fallback.** It picks a backend in
-   this order: Upstash Redis (if configured) → in-memory store (if running
-   on Vercel without Redis) → local JSON file (everywhere else). This means
-   the app **will not crash** on Vercel even if you skip the Redis setup —
-   but without Redis, data resets on every cold start, so it's fine for a
-   demo/submission but not for anything that needs real persistence.
-2. **`server.js` now exports the Express app** (`module.exports = app`)
-   instead of only calling `app.listen()`, which is what Vercel's Node
-   runtime expects to invoke as the serverless function handler.
-3. **A centralized error handler** returns clean JSON for malformed
-   requests instead of leaking a stack trace / server file path to the
-   client.
-
-To get real persistence (recommended, still free, no card required):
-1. Vercel project dashboard → **Storage → Marketplace → Upstash → Redis**,
-   create a free database.
-2. Vercel automatically injects `UPSTASH_REDIS_REST_URL` and
-   `UPSTASH_REDIS_REST_TOKEN` into your deployment — no extra config needed.
-3. Redeploy. `models/orderStore.js` detects those env vars and uses Redis
-   for all reads/writes instead of the in-memory fallback.
-4. Optional: seed the live Redis store with sample data by running
-   `vercel env pull .env.local` locally, then
-   `node -r dotenv/config data/seed.js`.
-
-**If you still get a 500 after this**: open Vercel dashboard → your project
-→ Deployments → click the deployment → **Runtime Logs**. That shows the
-actual error. The most common remaining cause is the Upstash integration
-being added but the project not yet redeployed after it was connected —
-env vars only take effect on the next deployment.
-
-Locally (no Upstash env vars set, no `VERCEL` env var), the app keeps using
-the JSON file — no setup needed for local development either way.
+- **Why no write-locking on `orders.json`**: Node runs the request handler and
+  `fs.readFileSync`/`writeFileSync` on a single thread, so two concurrent
+  `POST /api/orders` calls can't interleave mid-read/write within one process
+  — the synchronous I/O already serializes them. A real production system
+  would still use a proper database with transactions; this is a deliberate
+  scope trade-off for a file-backed demo, not an oversight.
+- **Why denylist rules force a hard block**: a matched email/card-BIN denylist
+  entry is a confirmed-bad-actor signal, not a probabilistic one, so it
+  overrides the additive score instead of just contributing weight to it.
 
 ## Author
 

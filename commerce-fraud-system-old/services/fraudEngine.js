@@ -10,32 +10,32 @@ const RULES = [
   {
     id: 'HIGH_ORDER_VALUE',
     weight: 20,
-    test: async (order) => order.amount >= 1000,
+    test: (order) => order.amount >= 1000,
     reason: 'Order value is unusually high (>= $1000)',
   },
   {
     id: 'ADDRESS_MISMATCH',
     weight: 25,
-    test: async (order) => order.billingCountry && order.shippingCountry && order.billingCountry !== order.shippingCountry,
+    test: (order) => order.billingCountry && order.shippingCountry && order.billingCountry !== order.shippingCountry,
     reason: 'Billing and shipping countries do not match',
   },
   {
     id: 'IP_COUNTRY_MISMATCH',
     weight: 20,
-    test: async (order) => order.ipCountry && order.billingCountry && order.ipCountry !== order.billingCountry,
+    test: (order) => order.ipCountry && order.billingCountry && order.ipCountry !== order.billingCountry,
     reason: 'Customer IP country differs from billing country',
   },
   {
     id: 'NEW_ACCOUNT_HIGH_VALUE',
     weight: 20,
-    test: async (order) => order.accountAgeDays !== undefined && order.accountAgeDays <= 2 && order.amount >= 300,
+    test: (order) => order.accountAgeDays !== undefined && order.accountAgeDays <= 2 && order.amount >= 300,
     reason: 'New account (<= 2 days old) placing a high-value order',
   },
   {
     id: 'VELOCITY',
     weight: 30,
-    test: async (order) => {
-      const recent = (await orderStore.getRecentByCustomer(order.customerEmail, 60)).filter(o => o.id !== order.id);
+    test: (order) => {
+      const recent = orderStore.getRecentByCustomer(order.customerEmail, 60).filter(o => o.id !== order.id);
       return recent.length >= 2;
     },
     reason: '3+ orders from this email within the last 60 minutes',
@@ -43,36 +43,36 @@ const RULES = [
   {
     id: 'BLACKLISTED_EMAIL',
     weight: 50,
-    test: async (order) => BLACKLISTED_EMAILS.includes(order.customerEmail.toLowerCase()),
+    test: (order) => BLACKLISTED_EMAILS.includes(order.customerEmail.toLowerCase()),
     reason: 'Customer email appears on the fraud denylist',
   },
   {
     id: 'BLACKLISTED_CARD_BIN',
     weight: 50,
-    test: async (order) => order.cardBin && BLACKLISTED_CARD_BINS.includes(order.cardBin),
+    test: (order) => order.cardBin && BLACKLISTED_CARD_BINS.includes(order.cardBin),
     reason: 'Card BIN appears on the fraud denylist',
   },
   {
     id: 'DISPOSABLE_EMAIL',
     weight: 15,
-    test: async (order) => FREE_EMAIL_DOMAINS.some(d => order.customerEmail.toLowerCase().endsWith('@' + d)),
+    test: (order) => FREE_EMAIL_DOMAINS.some(d => order.customerEmail.toLowerCase().endsWith('@' + d)),
     reason: 'Customer used a disposable/temporary email domain',
   },
   {
     id: 'HIGH_QUANTITY',
     weight: 10,
-    test: async (order) => order.quantity >= 10,
+    test: (order) => order.quantity >= 10,
     reason: 'Unusually high quantity of a single item',
   },
 ];
 
-async function scoreOrder(order) {
+function scoreOrder(order) {
   const triggered = [];
   let score = 0;
 
   for (const rule of RULES) {
     try {
-      if (await rule.test(order)) {
+      if (rule.test(order)) {
         score += rule.weight;
         triggered.push({ id: rule.id, weight: rule.weight, reason: rule.reason });
       }
