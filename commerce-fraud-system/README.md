@@ -6,9 +6,9 @@ A full-stack order-intake and fraud-risk management system that evaluates incomi
 
 ## Overview
 
-The system simulates a commerce fraud-risk workflow where every incoming order is evaluated against multiple fraud indicators such as order value, geographic mismatches, account age, order velocity, denylisted information, disposable email domains, and unusually high quantities.
+This system models a complete commerce fraud-risk workflow. Every incoming order is evaluated in real time against a set of fraud indicators, including order value, billing/shipping/IP geographic mismatches, account age, order velocity, denylisted emails or card BINs, disposable email domains, and abnormally high quantities.
 
-Each triggered rule contributes to the overall risk score. The final score is mapped to a risk band and used to determine the recommended order status.
+Each triggered indicator contributes a weighted score toward an overall risk score, which is mapped to a risk band (Low, Medium, High, Critical) and used to recommend an order status: Approve, Manual Review, or Block.
 
 ## Features
 
